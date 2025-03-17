@@ -4,6 +4,18 @@
 rm -f /tmp/luci-indexcache
 rm -f /tmp/luci-modulecache/*
 
+# Stop dan disable service jsholat
+if [ -f /etc/init.d/jsholat ]; then
+    /etc/init.d/jsholat stop
+    /etc/init.d/jsholat disable
+fi
+
+# Stop dan disable service jadwal
+if [ -f /etc/init.d/jadwal ]; then
+    /etc/init.d/jadwal stop
+    /etc/init.d/jadwal disable
+fi
+
 # Restart layanan uhttpd dan rpcd
 /etc/init.d/uhttpd restart
 /etc/init.d/rpcd restart
