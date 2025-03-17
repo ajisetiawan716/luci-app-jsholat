@@ -96,7 +96,7 @@ Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu y
 
 ### **3. Memainkan Suara Adzan**
 
-- Suara adzan akan otomatis diputar saat waktu sholat tiba. Pastikan file MP3 adzan (`adzan.mp3`) ada di `/usr/share/sounds/`.
+- Suara adzan akan otomatis diputar saat waktu sholat tiba. Pastikan file MP3 adzan (`adzan.mp3`) ada di `/root/jsholat/`.
 
 ---
 
