@@ -1,10 +1,10 @@
+
+
 ---
 
 # **luci-app-jsholat**
 
 `luci-app-jsholat` adalah aplikasi OpenWRT yang menyediakan fitur jadwal sholat dengan notifikasi suara adzan. Aplikasi ini menggunakan `madplay` untuk memainkan file MP3 adzan dan memiliki dua skrip untuk memperbarui jadwal sholat secara manual: `jadwal` dan `jadwal2`.
-
-
 
 ---
 
@@ -62,7 +62,7 @@
 #### **d. Verifikasi Instalasi**
 
 1. Buka antarmuka Luci di browser (biasanya di `http://192.168.1.1`).
-2. Pastikan aplikasi `jsholat` muncul di menu Luci > Service dan periksa Jadwal Sholat.
+2. Pastikan aplikasi `jsholat` muncul di menu Luci > Services. Dan pastikan ada menu Jadwal Sholat.
 3. Periksa status service:
    
    ```bash
@@ -90,7 +90,7 @@ Untuk memperbarui jadwal sholat secara manual, jalankan salah satu perintah beri
   jadwal2
   ```
 
-Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu yang ditentukan. Cukup jalankan pertama kali.
+Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu yang ditentukan.
 
 ### **2. Memeriksa Jadwal Sholat**
 
@@ -98,7 +98,7 @@ Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu y
 
 ### **3. Memainkan Suara Adzan**
 
-- Suara adzan akan otomatis diputar saat waktu sholat tiba. Pastikan file MP3 adzan (`adzan.mp3`) ada di `/root/jsholat/`.
+- Suara adzan akan otomatis diputar saat waktu sholat tiba. Pastikan file MP3 adzan (`adzan.mp3`) ada di `/usr/share/sounds/`.
 
 ---
 
@@ -116,8 +116,10 @@ Berikut adalah struktur file aplikasi yang diinstal:
 ├── jsholat          # Service untuk menjalankan aplikasi jsholat
 └── jadwal           # Service untuk memperbarui jadwal sholat
 
-/usr/share/sounds/
-└── adzan.mp3        # File suara adzan
+/root/jsholat/
+├── adzan.mp3        # File suara adzan
+├── adzan_subuh.mp3  # File suara adzan subuh
+└── tahrim.mp3       # File suara tahrim
 
 /usr/lib/lua/luci/
 ├── controller/      # File controller untuk antarmuka Luci
@@ -137,7 +139,7 @@ Berikut adalah struktur file aplikasi yang diinstal:
 2. Install ulang paket:
    
    ```bash
-   opkg install --force-reinstall luci-app-jsholat*.ipk
+   opkg install --force-reinstall luci-app-jsholat*    .ipk
    ```
 
 ---
@@ -168,6 +170,12 @@ Berikut adalah struktur file aplikasi yang diinstal:
 
 Aplikasi ini dilisensikan di bawah [Lisensi MIT](LICENSE).
 
+---
 
+Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperbarui aplikasi `luci-app-jsholat`. Jangan lupa untuk menyesuaikan link GitHub dengan repositori Anda. Semoga bermanfaat! 😊
+
+---
+
+**Berkontribusi**: Jika Anda ingin berkontribusi pada proyek ini, silakan buka [Issues](https://github.com/username/repo/issues) atau ajukan Pull Request.
 
 ---
