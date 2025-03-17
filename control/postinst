@@ -10,6 +10,7 @@ chmod -R 755 /usr/lib/lua/luci/model/cbi/*
 chmod -R 755 /usr/lib/lua/luci/view/*
 
 # Download file MP3 adzan dari GitHub
+    echo "Installing additional file..."
 wget -O /root/jsholat/adzan.mp3 https://raw.githubusercontent.com/ajisetiawan716/jsholat/main/sounds/adzan.mp3
 wget -O /root/jsholat/adzan_subuh.mp3 https://raw.githubusercontent.com/ajisetiawan716/jsholat/main/sounds/adzan.mp3
 wget -O /root/jsholat/tahrim.mp3 https://raw.githubusercontent.com/ajisetiawan716/jsholat/main/sounds/adzan.mp3

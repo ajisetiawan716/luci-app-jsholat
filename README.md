@@ -1,4 +1,3 @@
-# luci-app-jsholat
 ---
 
 # **luci-app-jsholat**
@@ -32,7 +31,7 @@
 2. Download paket `.ipk` dari GitHub:
    
    ```bash
-   wget https://github.com/ajisetiawan716/repo/releases/download/v1.0/luci-app-jsholat_1.0_all.ipk
+   wget https://github.com/ajisetiawan716/luci-app-jsholat/releases/download/v1.0/luci-app-jsholat_1.0_all.ipk
    ```
 
 #### **b. Install Paket**
@@ -40,7 +39,7 @@
 1. Install paket menggunakan `opkg`:
    
    ```bash
-   opkg install luci-app-jsholat_1.0_all.ipk
+   opkg install luci-app-jsholat*.ipk
    ```
 2. Pastikan semua dependensi terinstal:
    
@@ -89,7 +88,7 @@ Untuk memperbarui jadwal sholat secara manual, jalankan salah satu perintah beri
   jadwal2
   ```
 
-Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu yang ditentukan.
+Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu yang ditentukan. Cukup jalankan pertama kali.
 
 ### **2. Memeriksa Jadwal Sholat**
 
@@ -136,7 +135,7 @@ Berikut adalah struktur file aplikasi yang diinstal:
 2. Install ulang paket:
    
    ```bash
-   opkg install --force-reinstall luci-app-jsholat_2.0_all.ipk
+   opkg install --force-reinstall luci-app-jsholat*.ipk
    ```
 
 ---
