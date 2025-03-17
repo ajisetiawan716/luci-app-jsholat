@@ -4,6 +4,8 @@
 
 `luci-app-jsholat` adalah aplikasi OpenWRT yang menyediakan fitur jadwal sholat dengan notifikasi suara adzan. Aplikasi ini menggunakan `madplay` untuk memainkan file MP3 adzan dan memiliki dua skrip untuk memperbarui jadwal sholat secara manual: `jadwal` dan `jadwal2`.
 
+
+
 ---
 
 ## **Fitur**
