@@ -1,0 +1,13 @@
+
+config global 'setting'
+	option file_jadwal '/root/jsholat/jadwal.txt'
+	option sound_adzan '/root/jsholat/adzan.mp3'
+	option sound_adzan_shubuh '/root/jsholat/adzan_subuh.mp3'
+	option sound_adzan_imsy '/root/jsholat/tahrim.mp3'
+	option country 'Indonesia'
+	option method '20'
+	option city 'brebes'
+	option city_label 'Brebes'
+	option interval '3600'
+	option source 'jadwalsholat'
+

@@ -1,0 +1,30 @@
+#!/bin/sh /etc/rc.common
+START=99
+STOP=10
+
+USE_PROCD=1
+
+start_service() {
+    local source=$(uci get jsholat.setting.source || echo "aladhan")
+    local interval=$(uci get jsholat.setting.interval || echo 0)
+    local script="/usr/bin/jadwal"  # Default ke Aladhan
+
+    if [ "$source" = "jadwalsholat" ]; then
+        script="/usr/bin/jadwal2"  # Jika memilih JadwalSholat.Org
+    fi
+
+    # Jika interval adalah 0, jangan jalankan script
+    if [ "$interval" -eq 0 ]; then
+        echo "Interval is 0, script will not be executed."
+        return
+    fi
+
+    procd_open_instance
+    procd_set_param command /bin/sh -c "while true; do $script; sleep $interval; done"
+    procd_set_param respawn
+    procd_close_instance
+}
+
+stop_service() {
+    killall jadwal jadwal2  # Hentikan kedua script jika sedang berjalan
+}

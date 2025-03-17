@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Hapus cache Luci
+rm -f /tmp/luci-indexcache
+rm -f /tmp/luci-modulecache/*
+
+# Restart layanan uhttpd dan rpcd
+/etc/init.d/uhttpd restart
+/etc/init.d/rpcd restart
+
+exit 0

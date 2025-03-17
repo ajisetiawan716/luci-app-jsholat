@@ -1,0 +1,8 @@
+Package: luci-app-jsholat
+Version: 1.0
+Depends: libc, luci, madplay, alsa-utils
+Source: https://github.com/ajisetiawan716/jsholat
+Section: luci
+Maintainer: Aji Setiawan <email@ajisetiawan.my.id>
+Architecture: all
+Description: A Luci app for JSholat with adzan sound support.

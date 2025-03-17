@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# Baca konfigurasi dari UCI
+CITY=$(uci get jsholat.setting.city)
+COUNTRY=$(uci get jsholat.setting.country)
+METHOD=$(uci get jsholat.setting.method)
+JADWAL_FILE=$(uci get jsholat.setting.file_jadwal)
+INTERVAL=$(uci get jsholat.setting.interval)
+
+# File untuk menyimpan log terakhir diperbarui
+LAST_UPDATED_FILE="/root/jsholat/last_updated.txt"
+
+# Log: Memulai proses pembaruan jadwal
+logger "jadwal: Memulai pembaruan jadwal sholat pada $CURRENT_TIME"
+
+# Ambil tanggal hari ini dalam format YYYY-MM-DD
+TANGGAL=$(date +"%Y-%m-%d")
+
+# Ambil tanggal dan waktu saat ini
+CURRENT_TIME=$(date +"%d-%m-%Y %H:%M:%S")
+
+echo "Membaca tanggal saat ini yaitu tanggal $TANGGAL"
+sleep 3
+
+# URL API
+API_URL="http://api.aladhan.com/v1/timingsByCity/$TANGGAL?city=$CITY&country=$COUNTRY&method=$METHOD"
+
+# Hapus file jadwal lama jika ada
+if [ -f "$JADWAL_FILE" ]; then
+    echo "Menghapus jadwal lama..."
+    rm "$JADWAL_FILE"
+fi
+
+# Ambil data jadwal sholat
+response=$(curl -s -k -X GET "$API_URL")
+
+# Parse data JSON menggunakan jq
+IMSAK=$(echo "$response" | jq -r '.data.timings.Imsak')
+SUBUH=$(echo "$response" | jq -r '.data.timings.Fajr')
+DHUHR=$(echo "$response" | jq -r '.data.timings.Dhuhr')
+ASR=$(echo "$response" | jq -r '.data.timings.Asr')
+MAGHRIB=$(echo "$response" | jq -r '.data.timings.Maghrib')
+ISHA=$(echo "$response" | jq -r '.data.timings.Isha')
+echo "Sedang membaca data dari server jadwal shalat"
+sleep 3
+
+# Format tanggal untuk file jadwal
+TANGGAL_FORMATTED=$(date -d "$TANGGAL" +"%d-%m-%Y")
+
+# Simpan jadwal ke file
+echo "$TANGGAL_FORMATTED $IMSAK $SUBUH $DHUHR $ASR $MAGHRIB $ISHA" > "$JADWAL_FILE"
+echo "Sedang menyimpan jadwal..."
+sleep 3
+
+# Tampilkan pesan sukses
+echo "Jadwal sholat berhasil diperbarui pada $CURRENT_TIME."
+
+# Log: Proses pembaruan selesai
+logger "jadwal: Jadwal sholat berhasil diperbarui pada $CURRENT_TIME"
+
+# Simpan waktu terakhir diperbarui ke file
+echo "Terakhir diperbarui: $CURRENT_TIME" Sumber: Aladhan.com> "$LAST_UPDATED_FILE"
+logger "jadwal: Waktu terakhir diperbarui disimpan ke $LAST_UPDATED_FILE"

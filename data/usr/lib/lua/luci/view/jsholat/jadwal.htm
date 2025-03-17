@@ -1,0 +1,198 @@
+<%+header%>
+
+<style>
+    /* CSS untuk mengatur tampilan tabel */
+    .jadwal-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+    .jadwal-table th, .jadwal-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+    .jadwal-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .jadwal-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .jadwal-table tr:hover {
+        background-color: #f1f1f1;
+    }
+    /* CSS untuk menyoroti baris hari ini */
+    .jadwal-table tr.today {
+        background-color: #d4edda; /* Warna hijau muda */
+    }
+    /* CSS untuk pesan waktu sholat */
+    .prayer-alert {
+        display: none; /* Sembunyikan pesan secara default */
+        background-color: #d4edda;
+        padding: 10px;
+        text-align: center;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+    /* CSS untuk hitung mundur */
+    .countdown-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+    #countdown {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #155724;
+        background-color: #d4edda;
+        padding: 10px 20px;
+        border-radius: 10px;
+        display: inline-block;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    #prayerMessage {
+        font-size: 1.2em;
+        background-color: #d4edda;
+        padding: 10px 20px;
+        color: #333;
+        margin-top: 10px;
+        display: block;
+    }
+</style>
+
+<h2>Jadwal Sholat <%= cityName %> : <%= monthName %> <%= year %></h2>
+
+<div class="countdown-container">
+    <div id="countdown">00:00:00</div>
+    <span id="prayerMessage">Menuju Waktu</span>
+</div>
+
+<!-- Elemen untuk menampilkan pesan waktu sholat -->
+<div id="prayerAlert" class="prayer-alert">
+    Saatnya waktu sholat <%= nextPrayerName %>
+</div>
+
+<!-- Tampilkan pesan error jika ada -->
+<% if error_message then %>
+    <div style="color: red; margin-bottom: 20px;">
+        <strong>Error:</strong> <%= error_message %>
+    </div>
+<% elseif #jadwal == 0 then %>
+    <div style="color: red; margin-bottom: 20px;">
+        <strong>Error:</strong> Tidak ada data jadwal sholat yang tersedia.
+    </div>
+<% else %>
+    <table class="jadwal-table">
+        <tr>
+            <th style="width: 15%;">Hari</th>
+            <th style="width: 15%;">Tanggal</th>
+            <th style="width: 12%;">Imsyak</th>
+            <th style="width: 12%;">Subuh</th>
+            <th style="width: 12%;">Dzuhur</th>
+            <th style="width: 12%;">Ashar</th>
+            <th style="width: 12%;">Maghrib</th>
+            <th style="width: 12%;">Isya</th>
+        </tr>
+        <% for _, line in ipairs(jadwal) do %>
+            <% local date, imsyak, subuh, dzuhur, ashar, maghrib, isya = line:match("(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)") %>
+            <% 
+                local function getDayName(dateStr)
+                    local days = {"Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"}
+                    local day, month, year = dateStr:match("(%d+)-(%d+)-(%d+)")
+                    local dateTable = os.date("*t", os.time({year=year, month=month, day=day}))
+                    
+                    -- Geser indeks hari agar Senin menjadi hari pertama
+                    local wday = dateTable.wday - 0
+                    if wday == 0 then
+                        wday = 7
+                    end
+                    return days[wday]
+                end
+                local dayName = getDayName(date)
+            %>
+            <tr class="<%= date == today and 'today' or '' %>">
+                <td><%= dayName %></td>
+                <td><%= date %></td>
+                <td><%= imsyak %></td>
+                <td><%= subuh %></td>
+                <td><%= dzuhur %></td>
+                <td><%= ashar %></td>
+                <td><%= maghrib %></td>
+                <td><%= isya %></td>
+            </tr>
+        <% end %>
+    </table>
+<% end %>
+
+<!-- Tampilkan informasi terakhir diperbarui -->
+<p><%= lastUpdated %></p><br><br>
+
+<script>
+    // Data waktu sholat berikutnya dari server
+    const nextPrayerTime = <%= nextPrayerTime or "null" %>;
+    const nextPrayerName = "<%= nextPrayerName or "" %>";
+
+    // Fungsi untuk menghitung mundur
+    function startCountdown(targetTime, prayerName) {
+        const countdownElement = document.getElementById("countdown");
+        const prayerMessageElement = document.getElementById("prayerMessage");
+        const prayerAlertElement = document.getElementById("prayerAlert");
+
+        let intervalId;
+
+        function updateCountdown() {
+            const now = Math.floor(Date.now() / 1000); // Waktu lokal pengguna dalam detik
+            const diff = targetTime - now;
+
+            if (diff <= 0) {
+                // Jika hitung mundur selesai, tampilkan pesan selama 3 menit
+                countdownElement.textContent = "00:00:00";
+                prayerMessageElement.textContent = "";
+                prayerAlertElement.style.display = "block";
+                prayerAlertElement.textContent = "Saatnya waktu " + prayerName;
+
+                // Setelah 3 menit, muat ulang halaman untuk menghitung mundur berikutnya
+                setTimeout(() => {
+                    window.location.reload();
+                }, 180000); // 3 menit = 180.000 milidetik
+
+                // Hentikan interval
+                clearInterval(intervalId);
+            } else {
+                // Tampilkan hitung mundur
+                const hours = Math.floor(diff / 3600);
+                const minutes = Math.floor((diff % 3600) / 60);
+                const seconds = diff % 60;
+                countdownElement.textContent = 
+                    String(hours).padStart(2, "0") + ":" +
+                    String(minutes).padStart(2, "0") + ":" +
+                    String(seconds).padStart(2, "0");
+                prayerMessageElement.textContent = "Menuju waktu " + prayerName;
+            }
+        }
+
+        // Mulai hitung mundur
+        intervalId = setInterval(updateCountdown, 1000);
+        updateCountdown(); // Jalankan sekali untuk inisialisasi
+
+        // Hentikan interval saat halaman tidak aktif
+        window.onblur = () => clearInterval(intervalId);
+        window.onfocus = () => {
+            intervalId = setInterval(updateCountdown, 1000);
+            updateCountdown();
+        };
+    }
+
+    // Mulai hitung mundur jika waktu sholat berikutnya tersedia
+    if (nextPrayerTime) {
+        startCountdown(nextPrayerTime, nextPrayerName);
+    }
+</script>
+
+<%+footer%>

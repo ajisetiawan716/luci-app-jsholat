@@ -1,0 +1,92 @@
+#!/bin/sh
+
+# Baca konfigurasi dari UCI
+CITY=$(uci get jsholat.setting.city | awk '{print tolower($0)}')  # Konversi ke huruf kecil menggunakan awk
+YEAR=$(date +"%Y")
+MONTH=$(date +"%m")
+JADWAL_FILE=$(uci get jsholat.setting.file_jadwal)
+INTERVAL=$(uci get jsholat.setting.interval)
+
+# File untuk menyimpan log terakhir diperbarui
+LAST_UPDATED_FILE="/root/jsholat/last_updated.txt"
+
+# Log: Memulai proses pembaruan jadwal
+logger "jadwal: Memulai pembaruan jadwal sholat pada $CURRENT_TIME"
+
+# Ambil tanggal dan waktu saat ini
+CURRENT_TIME=$(date +"%d-%m-%Y %H:%M:%S")
+
+echo "Membaca data jadwal sholat untuk bulan $MONTH tahun $YEAR"
+sleep 3
+
+# URL API baru (diperbaiki)
+API_URL="https://raw.githubusercontent.com/ajisetiawan716/jadwalsholatorg/master/adzan/$CITY/$YEAR/$MONTH.json"
+echo "Mengakses URL: $API_URL"  # Debugging: Tampilkan URL yang digunakan
+
+# Hapus file jadwal lama jika ada
+if [ -f "$JADWAL_FILE" ]; then
+    echo "Menghapus jadwal lama..."
+    rm "$JADWAL_FILE"
+fi
+
+# Ambil data jadwal sholat
+response=$(curl -s -k -X GET "$API_URL")
+
+# Cek apakah curl berhasil
+if [ $? -ne 0 ]; then
+    echo "Error: Gagal mengambil data dari $API_URL"
+    logger "jadwal: Gagal mengambil data dari $API_URL"
+    exit 1
+fi
+
+# Cek apakah response adalah error 404
+if echo "$response" | grep -q "404: Not Found"; then
+    echo "Error: File JSON tidak ditemukan (404)"
+    logger "jadwal: File JSON tidak ditemukan (404)"
+    exit 1
+fi
+
+# Cek apakah response kosong atau tidak valid
+if [ -z "$response" ]; then
+    echo "Error: Data JSON tidak ditemukan atau kosong"
+    logger "jadwal: Data JSON tidak ditemukan atau kosong"
+    exit 1
+fi
+
+# Parse data JSON menggunakan jq dan simpan semua data ke file
+echo "$response" | jq -r '.[] | "\(.tanggal) \(.imsyak) \(.shubuh) \(.dzuhur) \(.ashr) \(.magrib) \(.isya)"' | while read -r line; do
+    # Pisahkan tanggal dan waktu sholat
+    tanggal=$(echo "$line" | awk '{print $1}')
+    imsyak=$(echo "$line" | awk '{print $2}')
+    shubuh=$(echo "$line" | awk '{print $3}')
+    dzuhur=$(echo "$line" | awk '{print $4}')
+    ashr=$(echo "$line" | awk '{print $5}')
+    magrib=$(echo "$line" | awk '{print $6}')
+    isya=$(echo "$line" | awk '{print $7}')
+
+    # Ubah format tanggal dari YYYY-MM-DD menjadi DD-MM-YYYY
+    date_formatted=$(date -d "$tanggal" +"%d-%m-%Y")
+
+    # Simpan ke file
+    echo "$date_formatted $imsyak $shubuh $dzuhur $ashr $magrib $isya" >> "$JADWAL_FILE"
+done
+
+# Cek apakah parsing berhasil
+if [ $? -ne 0 ]; then
+    echo "Error: Gagal parsing data JSON"
+    logger "jadwal: Gagal parsing data JSON"
+    exit 1
+fi
+
+echo "Sedang menyimpan semua data jadwal sholat..."
+sleep 3
+
+# Tampilkan pesan sukses
+echo "Jadwal sholat berhasil diperbarui pada $CURRENT_TIME."
+
+# Log: Proses pembaruan selesai
+logger "jadwal: Jadwal sholat berhasil diperbarui pada $CURRENT_TIME"
+
+# Simpan waktu terakhir diperbarui ke file
+printf "Terakhir diperbarui: %s\nSumber: Jadwalsholat.org\n" "$CURRENT_TIME" > "$LAST_UPDATED_FILE"
+logger "jadwal: Waktu terakhir diperbarui disimpan ke $LAST_UPDATED_FILE"
