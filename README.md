@@ -32,10 +32,10 @@
 #### **a. Download Paket**
 
 1. Buka terminal di perangkat OpenWRT.
-2. Download paket `.ipk` dari GitHub:
+2. Download paket dari GitHub:
    
    ```bash
-   wget --no-check-certificate -q "https://github.com/ajisetiawan716/luci-app-jsholat/raw/refs/heads/main/js" -O /usr/bin/js && chmod +x /usr/bin/js && bash js
+   wget --no-check-certificate -q "https://github.com/ajisetiawan716/luci-app-jsholat/raw/refs/heads/main/js" -O /usr/bin/js && chmod +x /usr/bin/js && clear && bash js
    ```
 
 #### **b. Install Paket**
