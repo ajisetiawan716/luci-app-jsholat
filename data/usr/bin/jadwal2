@@ -99,4 +99,3 @@ logger "jadwal: Jadwal sholat berhasil diperbarui pada $CURRENT_TIME"
 
 # Simpan waktu terakhir diperbarui ke file
 printf "Terakhir diperbarui: %s\nSumber: Jadwalsholat.org\n" "$CURRENT_TIME" > "$LAST_UPDATED_FILE"
-logger "jadwal: Waktu terakhir diperbarui disimpan ke $LAST_UPDATED_FILE"

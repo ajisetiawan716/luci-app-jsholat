@@ -13,7 +13,7 @@ config global 'setting'
     option sound_adzan_shubuh '/root/jsholat/adzan_subuh.mp3'
     option sound_adzan_imsy '/root/jsholat/tahrim.mp3'
 END
-
+log
     cat > /etc/init.d/jsholat << END
 #!/bin/sh /etc/rc.common
 START=20
@@ -57,17 +57,17 @@ RESULT="ERROR"
 
 # Validasi file sebelum menjalankan script
 if [ -z "$JADWAL" ] || [ ! -f "$JADWAL" ]; then
-    logger "jsholat: ERROR - File jadwal tidak ditemukan!"
+    logger -t "jsholat: ERROR - File jadwal tidak ditemukan!"
     exit 1
 fi
 
 if [ -z "$FILE_ADZAN" ] || [ ! -f "$FILE_ADZAN" ]; then
-    logger "jsholat: ERROR - File suara adzan tidak ditemukan!"
+    logger -t "jsholat: ERROR - File suara adzan tidak ditemukan!"
     exit 1
 fi
 
 if [ -z "$FILE_ADZAN_SHUBUH" ] || [ ! -f "$FILE_ADZAN_SHUBUH" ]; then
-    logger "jsholat: ERROR - File suara adzan shubuh tidak ditemukan!"
+    logger -t "jsholat: ERROR - File suara adzan shubuh tidak ditemukan!"
     exit 1
 fi
 
@@ -83,7 +83,7 @@ get_jadwal() {
         ISYA=$(echo $DATA | awk '{print $7}')
         TANGGAL=$TG
         RESULT="OK"
-        logger "jsholat: Update jadwal sholat berhasil"
+        logger -t "jsholat: Update jadwal sholat berhasil"
     else
         RESULT="ERROR"
     fi
@@ -111,7 +111,7 @@ while true; do
 
     if [ "$RESULT" = "OK" ]; then
         WAKTU=$(date +"%H:%M")
-        echo "$WAKTU > $IMSYAK $SHUBUH $DZUHUR $ASHAR $MAGRIB $ISYA"
+        echo "$WAKTU > $IMSYAK $SHUBUH $DZUHUR $ASHAR $MAGRIB $ISYA" > /dev/null
         
         for SALAT in IMSYAK SHUBUH DZUHUR ASHAR MAGRIB ISYA; do
             eval "WAKTU_SALAT=\$$SALAT"
@@ -123,12 +123,12 @@ while true; do
                 else
                     FILE="$FILE_ADZAN"
                 fi
-                logger "jsholat: Masuk waktu $SALAT, memainkan $FILE"
+                logger -t "jsholat: Masuk waktu $SALAT, memainkan $FILE"
                 play_adzan "$FILE"
             fi
         done
     else
-        logger "jsholat: ERROR - Tidak dapat membaca jadwal dari $JADWAL"
+        logger -t "jsholat: ERROR - Tidak dapat membaca jadwal dari $JADWAL"
     fi
     sleep 1
 done
