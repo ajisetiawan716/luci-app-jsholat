@@ -176,6 +176,10 @@ Aplikasi ini dilisensikan di bawah [Lisensi MIT](LICENSE).
 
 ---
 
-**Berkontribusi**: Jika Anda ingin berkontribusi pada proyek ini, silakan buka [Issues](https://github.com/ajisetiawan716/luci-app-jsholat/issues) atau ajukan Pull Request.
+Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperbarui aplikasi `luci-app-jsholat`. Jangan lupa untuk menyesuaikan link GitHub dengan repositori Anda. Semoga bermanfaat! 😊
+
+---
+
+**Berkontribusi**: Jika Anda ingin berkontribusi pada proyek ini, silakan buka [Issues](https://github.com/username/repo/issues) atau ajukan Pull Request.
 
 ---
