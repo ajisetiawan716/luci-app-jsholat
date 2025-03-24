@@ -158,9 +158,9 @@ echo "        Created by @ajisetiawan716        "
 echo " ====================================="
 echo " ====================================="
 echo " ==    Choice options:             =="
-echo " ==    1. Install Jsholat                   =="
-echo " ==    2. Delete Jsholat          =="
-echo " ==    3. Exiting Script..          =="
+echo " ==    1. Install Jsholat          =="
+echo " ==    2. Delete Jsholat           =="
+echo " ==    3. Exiting Script..         =="
 echo " ====================================="
     read -p "Select choice (1/2/3): " choice
 
