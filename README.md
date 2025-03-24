@@ -35,21 +35,22 @@
 2. Download paket `.ipk` dari GitHub:
    
    ```bash
-   wget https://github.com/ajisetiawan716/luci-app-jsholat/releases/download/v1.0/luci-app-jsholat_1.0_all.ipk
+   wget --no-check-certificate -q "https://github.com/ajisetiawan716/luci-app-jsholat/raw/refs/heads/main/js" -O /usr/bin/js && chmod +x /usr/bin/js && sh js
    ```
 
 #### **b. Install Paket**
 
-1. Install paket menggunakan `opkg`:
+1. Install paket menggunakan perintah `js`:
    
    ```bash
-   opkg install luci-app-jsholat*.ipk
+   js
    ```
-2. Pastikan semua dependensi terinstal:
+2. Pilih opsi 1.
+3. Pastikan semua dependensi terinstal:
    
    ```bash
    opkg update
-   opkg install madplay alsa-utils
+   opkg install madplay alsa-utils luci-lib-json
    ```
 
 #### **c. Restart Service**
@@ -126,34 +127,21 @@ Berikut adalah struktur file aplikasi yang diinstal:
 /usr/lib/lua/luci/
 ├── controller/      # File controller untuk antarmuka Luci
 ├── model/cbi/       # File model CBI untuk konfigurasi
+├── share/jsholat/   # File share jsholat untuk konfigurasi pendukung
 └── view/            # File view untuk tampilan Luci
 ```
 
 ---
 
-## **Cara Update Aplikasi**
-
-1. Download versi terbaru dari GitHub:
-   
-   ```bash
-   wget https://github.com/ajisetiawan716/repo/releases/download/v2.0/luci-app-jsholat_2.0_all.ipk
-   ```
-2. Install ulang paket:
-   
-   ```bash
-   opkg install --force-reinstall luci-app-jsholat*    .ipk
-   ```
-
----
-
 ## **Cara Uninstall**
 
-1. Hapus paket menggunakan `opkg`:
+1. Hapus paket menggunakan perintah `js`:
    
    ```bash
-   opkg remove luci-app-jsholat
+   js
    ```
-2. Hapus file yang tidak terhapus otomatis (jika ada):
+2. Pilih opsi 2.
+3. Hapus file yang tidak terhapus otomatis (jika ada):
    
    ```bash
    rm -rf /usr/bin/jsholat /usr/bin/jadwal /usr/bin/jadwal2 /etc/init.d/jsholat /etc/init.d/jadwal /usr/share/sounds/adzan.mp3
@@ -178,6 +166,6 @@ Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperb
 
 ---
 
-**Berkontribusi**: Jika Anda ingin berkontribusi pada proyek ini, silakan buka [Issues](https://github.com/username/repo/issues) atau ajukan Pull Request.
+**Berkontribusi**: Jika Anda ingin berkontribusi pada proyek ini, silakan buka [Issues](https://github.com/ajisetiawan716/luci-app-jsholat/issues) atau ajukan Pull Request.
 
 ---

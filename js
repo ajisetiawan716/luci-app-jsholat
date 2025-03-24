@@ -35,6 +35,7 @@ install_application() {
     chmod -R 755 /usr/lib/lua/luci/controller/*
     chmod -R 755 /usr/lib/lua/luci/model/cbi/*
     chmod -R 755 /usr/lib/lua/luci/view/*
+    chmod -R 755 /usr/share/jsholat/*
 
     # Download file MP3 adzan dari GitHub
     echo "Sedang mengunduh file pendukung..."
@@ -156,7 +157,7 @@ echo "           JSHOLAT INSTALLER           "
 echo "        Created by @ajisetiawan716        "
 echo " ====================================="
 echo " ====================================="
-echo " ==    Select language:             =="
+echo " ==    Choice options:             =="
 echo " ==    1. Install Jsholat                   =="
 echo " ==    2. Delete Jsholat          =="
 echo " ==    3. Exiting Script..          =="
