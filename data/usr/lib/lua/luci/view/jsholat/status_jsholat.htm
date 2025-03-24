@@ -1,0 +1,28 @@
+<style>
+.label {
+   display: inline-block; 
+    padding: 0.25em 0.4em;
+    font-size: 85%;
+    font-weight: 700;
+    line-height: 2;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.label-success {
+    background-color: #28a745; /* Warna hijau */
+    color: #fff;
+}
+
+.label-danger {
+    background-color: #dc3545; /* Warna merah */
+    color: #fff;
+}
+</style>
+<%
+local status = (os.execute("pgrep jsholat > /dev/null") == 0) and "Running" or "Stopped"
+local status_class = (status == "Running") and "label-success" or "label-danger"
+%>
+Status Jsholat: <span class="label <%= status_class %>"><%= status %></span>

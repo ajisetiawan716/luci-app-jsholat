@@ -8,6 +8,7 @@ config global 'setting'
 	option method '20'
 	option city 'brebes'
 	option city_label 'Brebes'
-	option interval '3600'
 	option source 'jadwalsholat'
+	option service '1'
+	option interval '3600'
 

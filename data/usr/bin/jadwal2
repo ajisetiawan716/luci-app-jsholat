@@ -1,4 +1,13 @@
 #!/bin/sh
+cek_internet() {
+    curl -s --head --fail "https://www.google.com" > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "Error: Tidak ada koneksi internet, pembaruan jadwal dibatalkan."
+        logger "jadwal: Gagal memperbarui jadwal - Tidak ada koneksi internet"
+        exit 1
+    fi
+}
+cek_internet
 
 # Baca konfigurasi dari UCI
 CITY=$(uci get jsholat.setting.city | awk '{print tolower($0)}')  # Konversi ke huruf kecil menggunakan awk
@@ -8,7 +17,7 @@ JADWAL_FILE=$(uci get jsholat.setting.file_jadwal)
 INTERVAL=$(uci get jsholat.setting.interval)
 
 # File untuk menyimpan log terakhir diperbarui
-LAST_UPDATED_FILE="/root/jsholat/last_updated.txt"
+LAST_UPDATED_FILE="/usr/share/jsholat/last_updated.txt"
 
 # Log: Memulai proses pembaruan jadwal
 logger "jadwal: Memulai pembaruan jadwal sholat pada $CURRENT_TIME"
@@ -21,7 +30,8 @@ sleep 3
 
 # URL API baru (diperbaiki)
 API_URL="https://raw.githubusercontent.com/ajisetiawan716/jadwalsholatorg/master/adzan/$CITY/$YEAR/$MONTH.json"
-echo "Mengakses URL: $API_URL"  # Debugging: Tampilkan URL yang digunakan
+# echo "Mengakses URL: $API_URL"  # Debugging: Tampilkan URL yang digunakan
+echo "Sedang membaca data dari server jadwal shalat"
 
 # Hapus file jadwal lama jika ada
 if [ -f "$JADWAL_FILE" ]; then

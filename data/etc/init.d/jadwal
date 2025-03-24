@@ -26,5 +26,12 @@ start_service() {
 }
 
 stop_service() {
-    killall jadwal jadwal2  # Hentikan kedua script jika sedang berjalan
+    # Dapatkan PID dari proses jsholat
+    local pid=$(pgrep -f "/usr/bin/jadwal")
+    echo "Stopping jsholat service (PID: $pid)..." > /dev/console  # Log ke console
+
+    # Hentikan service jika PID ditemukan
+    if [ -n "$pid" ]; then
+        kill "$pid"
+    fi
 }

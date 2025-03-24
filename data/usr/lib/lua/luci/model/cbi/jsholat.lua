@@ -22,7 +22,7 @@ local cities = {}  -- Inisialisasi tabel kosong untuk kota
 local city_label_map = {}  -- Untuk memetakan value ke label
 
 -- Coba buka file JSON
-local file, err = io.open("/root/jsholat/cities.json", "r")
+local file, err = io.open("/usr/share/jsholat/cities.json", "r")
 if not file then
     -- Jika file tidak ditemukan, tampilkan pesan error dan lanjutkan
     m.description = m.description .. "<br><br><strong style='color: red;'>Error: File cities.json tidak ditemukan!</strong>"
@@ -85,9 +85,12 @@ interval.default = "0"
 button = s:option(Button, "_button", "")
 button.inputtitle = "Perbarui Jadwal Sekarang"
 button.inputstyle = "apply"
-function button.write(self, section)
-    -- Kosongkan fungsi write karena proses sekarang dilakukan via AJAX
-end
+button:depends("source", "jadwalsholat")  -- Hanya tampilkan jika sumber jadwal adalah JadwalSholat.Org
+button:depends("source", "aladhan")      -- Hanya tampilkan jika sumber jadwal adalah Aladhan
+
+-- Elemen untuk menampilkan output
+output = s:option(DummyValue, "_output", "Output Pembaruan")
+output.template = "jsholat/output"  -- Gunakan template khusus untuk output
 
 -- Section untuk pengaturan file suara
 s2 = m:section(TypedSection, "global", "Pengaturan File Suara")
@@ -110,10 +113,88 @@ sound_adzan_imsy.datatype = "file"
 sound_adzan_imsy.placeholder = "/root/jsholat/tahrim.mp3"
 
 lihat_jadwal = s2:option(Button, "_jadwal", "Lihat Jadwal")
-lihat_jadwal.inputtitle = "Lihat Jadwal"
+lihat_jadwal.inputtitle = "Lihat Jadwal Sholat"
 lihat_jadwal.inputstyle = "view"
 function lihat_jadwal.write(self, section)
     luci.http.redirect(luci.dispatcher.build_url("admin/services/jsholat/jadwal"))
+end
+
+-- Section untuk pengaturan service
+s3 = m:section(TypedSection, "global", "Pengaturan Service")
+s3.anonymous = true
+
+-- Fungsi untuk memeriksa nilai interval jadwal
+function check_interval()
+    local handle = io.popen("uci get jsholat.setting.interval")
+    local interval = tonumber(handle:read("*a"))
+    handle:close()
+    return interval
+end
+
+-- Definisikan pesan konfirmasi di awal
+restart_jadwal_msg = s3:option(DummyValue, "_restart_jadwal_msg", "Pesan Restart Jadwal")
+restart_jadwal_msg.value = "Belum ada perintah yang dijalankan."
+
+-- Cek nilai interval sebelum membuat tombol
+if check_interval() ~= 0 then
+    -- Tombol untuk restart service jadwal
+    restart_jadwal = s3:option(Button, "_restart_jadwal", "Restart Service Jadwal")
+    restart_jadwal.inputtitle = "Restart Service Jadwal"
+    restart_jadwal.inputstyle = "apply"
+
+    function restart_jadwal.write(self, section)
+        -- Jalankan perintah restart
+        os.execute("/etc/init.d/jadwal restart")
+        -- Set pesan konfirmasi
+        restart_jadwal_msg.value = "Service Jadwal telah di-restart pada " .. os.date("%Y-%m-%d %H:%M:%S")
+    end
+else
+    -- Jika interval adalah 0, tampilkan pesan bahwa tombol tidak tersedia
+    restart_jadwal_msg.value = "Restart jadwal dinonaktifkan"
+end
+
+-- Tombol untuk restart service jsholat
+restart_jsholat = s3:option(Button, "_restart_jsholat", "Restart Service Jsholat")
+restart_jsholat.inputtitle = "Restart Service Jsholat"
+restart_jsholat.inputstyle = "apply"
+function restart_jsholat.write(self, section)
+    os.execute("/etc/init.d/jsholat restart")
+    restart_jsholat_msg.value = "Service Jsholat telah di-restart"
+end
+
+-- Pesan konfirmasi
+restart_jsholat_msg = s3:option(DummyValue, "_restart_jsholat_msg", "Pesan Restart Jsholat")
+restart_jsholat_msg.value = "Belum ada perintah.."
+
+-- Status service jadwal
+status_jadwal = s3:option(DummyValue, "_status_jadwal", "Status Service Jadwal")
+status_jadwal.template = "jsholat/status_jadwal"  -- Gunakan template khusus untuk status
+status_jadwal.description = "Status: "  -- Menambahkan keterangan teks "Status"
+
+-- Status service jsholat
+status_jsholat = s3:option(DummyValue, "_status_jsholat", "Status Service Jsholat")
+status_jsholat.template = "jsholat/status_jsholat"  -- Gunakan template khusus untuk status
+status_jsholat.description = "Status: "  -- Menambahkan keterangan teks "Status"
+
+-- Opsi untuk mengaktifkan atau menonaktifkan service jsholat
+service_jsholat = s3:option(ListValue, "service", "Status Service Jsholat")
+service_jsholat:value("1", "ON")
+service_jsholat:value("0", "OFF")
+service_jsholat.default = "1"
+
+-- Fungsi untuk mengaktifkan/menonaktifkan service saat nilai berubah
+local sys = require "luci.sys"
+
+function service_jsholat.write(self, section, value)
+    -- Simpan nilai ke konfigurasi
+    self.map:set(section, "service", value)
+
+    -- Jalankan atau hentikan service berdasarkan nilai
+    if value == "0" then
+        sys.call("sudo /etc/init.d/jsholat stop>/dev/null 2>&1")
+    else
+        sys.call("sudo /etc/init.d/jsholat start >/dev/null 2>&1")
+    end
 end
 
 return m

@@ -25,6 +25,7 @@
     /* CSS untuk menyoroti baris hari ini */
     .jadwal-table tr.today {
         background-color: #d4edda; /* Warna hijau muda */
+font-weight: bold;
     }
     /* CSS untuk pesan waktu sholat */
     .prayer-alert {
@@ -74,9 +75,9 @@
 </div>
 
 <!-- Elemen untuk menampilkan pesan waktu sholat -->
-<div id="prayerAlert" class="prayer-alert">
+<!-- <div id="prayerAlert" class="prayer-alert">
     Saatnya waktu sholat <%= nextPrayerName %>
-</div>
+</div> -->
 
 <!-- Tampilkan pesan error jika ada -->
 <% if error_message then %>
@@ -131,12 +132,87 @@
 <% end %>
 
 <!-- Tampilkan informasi terakhir diperbarui -->
-<p><%= lastUpdated %></p><br><br>
+<p><br><%= lastUpdated %></p><br><br>
 
 <script>
-    // Data waktu sholat berikutnya dari server
-    const nextPrayerTime = <%= nextPrayerTime or "null" %>;
-    const nextPrayerName = "<%= nextPrayerName or "" %>";
+    // Data dari controller
+    const jadwal = <%= luci.http.write_json(jadwal) %>; // Seluruh jadwal sholat
+    const nextPrayerTime = <%= nextPrayerTime or "null" %>; // Timestamp waktu sholat berikutnya
+    const nextPrayerName = "<%= nextPrayerName or "" %>"; // Nama waktu sholat berikutnya
+    const today = "<%= today %>"; // Tanggal hari ini dalam format DD-MM-YYYY
+
+    // Fungsi untuk mengonversi waktu "HH:MM" ke timestamp
+    function getPrayerTimestamp(timeString, isTomorrow = false) {
+        const now = new Date();
+        const [hours, minutes] = timeString.split(":");
+        const prayerTime = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + (isTomorrow ? 1 : 0), // Tambah 1 hari jika besok
+            parseInt(hours),
+            parseInt(minutes),
+            0
+        );
+        return Math.floor(prayerTime.getTime() / 1000); // Konversi ke timestamp (detik)
+    }
+
+    // Fungsi untuk mendapatkan waktu sholat berikutnya
+    function getNextPrayerTime() {
+        const now = Math.floor(Date.now() / 1000); // Waktu saat ini dalam detik
+        let nextPrayerTime = null;
+        let nextPrayerName = null;
+
+        // Cari waktu sholat berikutnya di hari ini
+        jadwal.forEach(line => {
+            const [date, imsyak, subuh, dzuhur, ashar, maghrib, isya] = line.split(" ");
+            if (date === today) {
+                const prayerTimes = [
+                    { name: "Imsyak", time: imsyak },
+                    { name: "Subuh", time: subuh },
+                    { name: "Dzuhur", time: dzuhur },
+                    { name: "Ashar", time: ashar },
+                    { name: "Maghrib", time: maghrib },
+                    { name: "Isya", time: isya }
+                ];
+
+                prayerTimes.forEach(prayer => {
+                    const prayerTime = getPrayerTimestamp(prayer.time);
+                    if (prayerTime > now && (!nextPrayerTime || prayerTime < nextPrayerTime)) {
+                        nextPrayerTime = prayerTime;
+                        nextPrayerName = prayer.name;
+                    }
+                });
+            }
+        });
+
+        // Jika tidak ada waktu sholat yang tersisa di hari ini, cari di hari besok
+        if (!nextPrayerTime) {
+            const tomorrow = new Date(Date.now() + 86400000).toLocaleDateString("en-GB").replace(/\//g, "-"); // Besok
+            jadwal.forEach(line => {
+                const [date, imsyak, subuh, dzuhur, ashar, maghrib, isya] = line.split(" ");
+                if (date === tomorrow) {
+                    const prayerTimes = [
+                        { name: "Imsyak", time: imsyak },
+                        { name: "Subuh", time: subuh },
+                        { name: "Dzuhur", time: dzuhur },
+                        { name: "Ashar", time: ashar },
+                        { name: "Maghrib", time: maghrib },
+                        { name: "Isya", time: isya }
+                    ];
+
+                    prayerTimes.forEach(prayer => {
+                        const prayerTime = getPrayerTimestamp(prayer.time, true);
+                        if (!nextPrayerTime || prayerTime < nextPrayerTime) {
+                            nextPrayerTime = prayerTime;
+                            nextPrayerName = prayer.name;
+                        }
+                    });
+                }
+            });
+        }
+
+        return { time: nextPrayerTime, name: nextPrayerName };
+    }
 
     // Fungsi untuk menghitung mundur
     function startCountdown(targetTime, prayerName) {
@@ -153,13 +229,17 @@
             if (diff <= 0) {
                 // Jika hitung mundur selesai, tampilkan pesan selama 3 menit
                 countdownElement.textContent = "00:00:00";
-                prayerMessageElement.textContent = "";
+                prayerMessageElement.textContent = "Saatnya waktu " + prayerName;
                 prayerAlertElement.style.display = "block";
-                prayerAlertElement.textContent = "Saatnya waktu " + prayerName;
+               prayerAlertElement.textContent = "Saatnya waktu " + prayerName;
 
-                // Setelah 3 menit, muat ulang halaman untuk menghitung mundur berikutnya
+                // Setelah 3 menit, hitung ulang waktu sholat berikutnya
                 setTimeout(() => {
-                    window.location.reload();
+                    const nextPrayerData = getNextPrayerTime();
+                    if (nextPrayerData) {
+                        startCountdown(nextPrayerData.time, nextPrayerData.name); // Mulai hitung mundur berikutnya
+                    }
+                    prayerAlertElement.style.display = "none"; // Sembunyikan pesan adzan
                 }, 180000); // 3 menit = 180.000 milidetik
 
                 // Hentikan interval

@@ -1,0 +1,5 @@
+<% 
+local status = (os.execute("pgrep -f 'jadwal'> /dev/null") == 0) and "Running" or "Stopped" 
+local status_class = (status == "Running") and "label-success" or "label-danger"
+%>
+<br><p>Status Jadwal: <span class="label <%= status_class %>"><%= status %></span><br><p>

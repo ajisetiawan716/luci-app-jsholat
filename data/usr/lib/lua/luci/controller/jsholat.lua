@@ -2,10 +2,10 @@ module("luci.controller.jsholat", package.seeall)
 
 function index()
     -- Entry utama untuk halaman jadwal sholat
-    entry({"admin", "services", "jsholat"}, cbi("jsholat"), _("Jadwal Sholat"), 60)
+   entry({"admin", "services", "jsholat"}, cbi("jsholat"), _("Jadwal Sholat"), 60)
 
     -- Entry untuk halaman pengaturan jadwal
-    entry({"admin", "services", "jsholat", "setting_jadwal"}, cbi("jsholat"), _("Pengaturan Jadwal"), 70)
+    entry({"admin", "services", "jsholat", "setting"}, cbi("jsholat"), _("Pengaturan Jadwal"), 70)
 
     -- Entry untuk halaman lihat jadwal
     entry({"admin", "services", "jsholat", "jadwal"}, call("action_jadwal"), _("Lihat Jadwal"), 80)
@@ -50,7 +50,7 @@ function action_jadwal()
     local cityName = uci:get("jsholat", "setting", "city_label") or "Kota Tidak Diketahui"
 
     -- Baca isi file last_updated.txt
-    local lastUpdatedFile = io.open("/root/jsholat/last_updated.txt", "r")
+    local lastUpdatedFile = io.open("/usr/share/jsholat/last_updated.txt", "r")
     local lastUpdated = "Terakhir diperbarui: Informasi tidak tersedia"
     if lastUpdatedFile then
         lastUpdated = lastUpdatedFile:read("*a")
@@ -74,15 +74,44 @@ function action_jadwal()
     end
 
     -- Fungsi untuk mendapatkan waktu sholat berikutnya
-    local function getNextPrayerTime()
-        local now = os.time()
-        local nextPrayerTime = nil
-        local nextPrayerName = nil
+local function getNextPrayerTime()
+    local now = os.time()
+    local nextPrayerTime = nil
+    local nextPrayerName = nil
 
-        -- Loop melalui jadwal sholat untuk menemukan waktu sholat berikutnya
+    -- Loop melalui jadwal sholat untuk menemukan waktu sholat berikutnya
+    for _, line in ipairs(jadwal) do
+        local date, imsyak, subuh, dzuhur, ashar, maghrib, isya = line:match("(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)")
+        if date == today then
+            local prayerTimes = {
+                {name = "Imsyak", time = imsyak},
+                {name = "Subuh", time = subuh},
+                {name = "Dzuhur", time = dzuhur},
+                {name = "Ashar", time = ashar},
+                {name = "Maghrib", time = maghrib},
+                {name = "Isya", time = isya}
+            }
+
+            for _, prayer in ipairs(prayerTimes) do
+                if isValidTime(prayer.time) then
+                    local prayerTime = os.time({year=tonumber(year), month=tonumber(month), day=tonumber(day), hour=tonumber(prayer.time:sub(1, 2)), min=tonumber(prayer.time:sub(4, 5)), sec=0})
+                    if prayerTime > now then
+                        if not nextPrayerTime or prayerTime < nextPrayerTime then
+                            nextPrayerTime = prayerTime
+                            nextPrayerName = prayer.name
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- Jika tidak ada waktu sholat yang tersisa pada hari ini, cari waktu sholat pertama pada hari berikutnya
+    if not nextPrayerTime then
+        local tomorrow = os.date("%d-%m-%Y", os.time() + 86400) -- Tambah 1 hari (86400 detik)
         for _, line in ipairs(jadwal) do
             local date, imsyak, subuh, dzuhur, ashar, maghrib, isya = line:match("(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)%s+(.+)")
-            if date == today then
+            if date == tomorrow then
                 local prayerTimes = {
                     {name = "Imsyak", time = imsyak},
                     {name = "Subuh", time = subuh},
@@ -94,20 +123,20 @@ function action_jadwal()
 
                 for _, prayer in ipairs(prayerTimes) do
                     if isValidTime(prayer.time) then
-                        local prayerTime = os.time({year=tonumber(year), month=tonumber(month), day=tonumber(day), hour=tonumber(prayer.time:sub(1, 2)), min=tonumber(prayer.time:sub(4, 5)), sec=0})
-                        if prayerTime > now then
-                            if not nextPrayerTime or prayerTime < nextPrayerTime then
-                                nextPrayerTime = prayerTime
-                                nextPrayerName = prayer.name
-                            end
+                        local prayerTime = os.time({year=tonumber(year), month=tonumber(month), day=tonumber(day) + 1, hour=tonumber(prayer.time:sub(1, 2)), min=tonumber(prayer.time:sub(4, 5)), sec=0})
+                        if not nextPrayerTime or prayerTime < nextPrayerTime then
+                            nextPrayerTime = prayerTime
+                            nextPrayerName = prayer.name
                         end
                     end
                 end
+                break
             end
         end
-
-        return nextPrayerTime, nextPrayerName
     end
+
+    return nextPrayerTime, nextPrayerName
+end
 
     local nextPrayerTime, nextPrayerName = getNextPrayerTime()
 
@@ -131,15 +160,20 @@ function action_update()
     local source = uci:get("jsholat", "setting", "source") or "aladhan"
     local script = (source == "jadwalsholat") and "/usr/bin/jadwal2" or "/usr/bin/jadwal"
 
-    -- Jalankan script dan tangkap outputnya
+    -- Jalankan script yang dipilih
     local handle = io.popen(script .. " 2>&1")
     local output = ""
-    for line in handle:lines() do
-        output = output .. line .. "<br>"
+    if handle then
+        for line in handle:lines() do
+            output = output .. line .. "\n"  -- Gabungkan output dengan newline
+        end
+        handle:close()
+    else
+        output = "Gagal menjalankan script: " .. tostring(script)
     end
-    handle:close()
 
     -- Kirim output sebagai respons
-    luci.http.prepare_content("text/html")
+    luci.http.prepare_content("text/plain")  -- Ubah tipe konten menjadi text/plain
     luci.http.write(output)
 end
+

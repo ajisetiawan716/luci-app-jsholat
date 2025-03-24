@@ -1,4 +1,13 @@
 #!/bin/sh
+cek_internet() {
+    curl -s --head --fail "https://www.google.com" > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "Error: Tidak ada koneksi internet, pembaruan jadwal dibatalkan."
+        logger "jadwal: Gagal memperbarui jadwal - Tidak ada koneksi internet"
+        exit 1
+    fi
+}
+cek_internet
 
 # Baca konfigurasi dari UCI
 CITY=$(uci get jsholat.setting.city)
@@ -8,16 +17,16 @@ JADWAL_FILE=$(uci get jsholat.setting.file_jadwal)
 INTERVAL=$(uci get jsholat.setting.interval)
 
 # File untuk menyimpan log terakhir diperbarui
-LAST_UPDATED_FILE="/root/jsholat/last_updated.txt"
-
-# Log: Memulai proses pembaruan jadwal
-logger "jadwal: Memulai pembaruan jadwal sholat pada $CURRENT_TIME"
+LAST_UPDATED_FILE="/usr/share/jsholat/last_updated.txt"
 
 # Ambil tanggal hari ini dalam format YYYY-MM-DD
 TANGGAL=$(date +"%Y-%m-%d")
 
 # Ambil tanggal dan waktu saat ini
 CURRENT_TIME=$(date +"%d-%m-%Y %H:%M:%S")
+
+# Log: Memulai proses pembaruan jadwal
+logger "jadwal: Memulai pembaruan jadwal sholat pada $CURRENT_TIME"
 
 echo "Membaca tanggal saat ini yaitu tanggal $TANGGAL"
 sleep 3
@@ -59,5 +68,5 @@ echo "Jadwal sholat berhasil diperbarui pada $CURRENT_TIME."
 logger "jadwal: Jadwal sholat berhasil diperbarui pada $CURRENT_TIME"
 
 # Simpan waktu terakhir diperbarui ke file
-echo "Terakhir diperbarui: $CURRENT_TIME" Sumber: Aladhan.com> "$LAST_UPDATED_FILE"
+printf "Terakhir diperbarui: %s\nSumber: Aladhan.com\n" "$CURRENT_TIME" > "$LAST_UPDATED_FILE"
 logger "jadwal: Waktu terakhir diperbarui disimpan ke $LAST_UPDATED_FILE"
