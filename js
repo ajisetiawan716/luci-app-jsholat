@@ -37,7 +37,7 @@ install_application() {
     chmod -R 755 /usr/lib/lua/luci/view/*
     chmod -R 755 /usr/share/jsholat/*
     chmod -R 755 /usr/bin/*
-    chmod -R 755 /usr/init.d/*
+    chmod -R 755 /etc/init.d/*
 
     # Download file MP3 adzan dari GitHub
     echo "Sedang mengunduh file pendukung..."
