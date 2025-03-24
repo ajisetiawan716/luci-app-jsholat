@@ -4,4 +4,73 @@
 rm -f /tmp/luci-indexcache
 rm -f /tmp/luci-modulecache/*
 
+# Set permissions untuk file yang ada di folder "data"
+chmod -R 755 /usr/lib/lua/luci/controller/*
+chmod -R 755 /usr/lib/lua/luci/model/cbi/*
+chmod -R 755 /usr/lib/lua/luci/view/*
+
+# Download file MP3 adzan dari GitHub
+echo "Sedang mengunduh file pendukung..."
+wget -q -O /root/jsholat/adzan.mp3 https://raw.githubusercontent.com/ajisetiawan716/luci-app-jsholat/refs/heads/main/sounds/adzan.mp3
+wget -q -O /root/jsholat/adzan_subuh.mp3 https://raw.githubusercontent.com/ajisetiawan716/luci-app-jsholat/refs/heads/main/sounds/adzan_subuh.mp3
+wget -q -O /root/jsholat/tahrim.mp3 https://raw.githubusercontent.com/ajisetiawan716/luci-app-jsholat/refs/heads/main/sounds/tahrim.mp3
+echo "File pendukung terunduh..."
+
+# Set permissions untuk file MP3
+chmod 644 /root/jsholat/adzan.mp3
+chmod 644 /root/jsholat/adzan_subuh.mp3
+chmod 644 /root/jsholat/tahrim.mp3
+
+# Install paket pendukung (madplay dan alsa-utils)
+# Fungsi untuk mengecek apakah paket sudah terinstal
+is_package_installed() {
+    opkg list-installed | grep -q "^$1 -"
+}
+
+# Install paket pendukung (madplay dan alsa-utils) jika belum terinstal
+if ! is_package_installed "madplay"; then
+    echo "Installing madplay..."
+    opkg update
+    opkg install madplay
+else
+    echo "madplay is already installed."
+fi
+
+if ! is_package_installed "alsa-utils"; then
+    echo "Installing alsa-utils..."
+    opkg update
+    opkg install alsa-utils
+else
+    echo "alsa-utils is already installed."
+fi
+
+if ! is_package_installed "luci-lib-json"; then
+    echo "Installing luci-lib-json..."
+    opkg update
+    opkg install luci-lib-json
+else
+    echo "luci-lib-json is already installed."
+fi
+
+# Set permissions untuk script /usr/bin/jsholat
+chmod 755 /usr/bin/jsholat
+chmod 755 /usr/bin/jadwal
+chmod 755 /usr/bin/jadwal2
+
+# Enable dan start service jsholat
+if [ -f /etc/init.d/jsholat ]; then
+    /etc/init.d/jsholat enable
+    /etc/init.d/jsholat start
+fi
+
+# Enable dan start service jadwal
+if [ -f /etc/init.d/jadwal ]; then
+    /etc/init.d/jadwal enable
+    /etc/init.d/jadwal start
+fi
+
+# Restart layanan uhttpd dan rpcd
+/etc/init.d/uhttpd restart
+/etc/init.d/rpcd restart
+
 exit 0
