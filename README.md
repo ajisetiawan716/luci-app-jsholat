@@ -24,6 +24,8 @@
 - Perangkat dengan OpenWRT terinstal.
 - Koneksi internet untuk mengunduh file dari GitHub.
 - Paket pendukung: `madplay` dan `alsa-utils`.
+- USB Soundcard
+- Speaker
 
 ### **2. Langkah-Langkah Instalasi**
 
