@@ -1,5 +1,3 @@
-
-
 ---
 
 # **luci-app-jsholat**
@@ -30,6 +28,7 @@
 #### **a. Download Paket**
 
 1. Buka terminal di perangkat OpenWRT.
+
 2. Download paket `.ipk` dari GitHub:
    
    ```bash
@@ -43,6 +42,7 @@
    ```bash
    opkg install luci-app-jsholat*.ipk
    ```
+
 2. Pastikan semua dependensi terinstal:
    
    ```bash
@@ -62,7 +62,9 @@
 #### **d. Verifikasi Instalasi**
 
 1. Buka antarmuka Luci di browser (biasanya di `http://192.168.1.1`).
+
 2. Pastikan aplikasi `jsholat` muncul di menu Luci > Services. Dan pastikan ada menu Jadwal Sholat.
+
 3. Periksa status service:
    
    ```bash
@@ -136,6 +138,7 @@ Berikut adalah struktur file aplikasi yang diinstal:
    ```bash
    wget https://github.com/ajisetiawan716/repo/releases/download/v2.0/luci-app-jsholat_2.0_all.ipk
    ```
+
 2. Install ulang paket:
    
    ```bash
@@ -151,6 +154,7 @@ Berikut adalah struktur file aplikasi yang diinstal:
    ```bash
    opkg remove luci-app-jsholat
    ```
+
 2. Hapus file yang tidak terhapus otomatis (jika ada):
    
    ```bash
@@ -172,10 +176,6 @@ Aplikasi ini dilisensikan di bawah [Lisensi MIT](LICENSE).
 
 ---
 
-Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperbarui aplikasi `luci-app-jsholat`. Jangan lupa untuk menyesuaikan link GitHub dengan repositori Anda. Semoga bermanfaat! 😊
-
----
-
-**Berkontribusi**: Jika Anda ingin berkontribusi pada proyek ini, silakan buka [Issues](https://github.com/username/repo/issues) atau ajukan Pull Request.
+**Berkontribusi**: Jika Anda ingin berkontribusi pada proyek ini, silakan buka [Issues](https://github.com/ajisetiawan716/luci-app-jsholat/issues) atau ajukan Pull Request.
 
 ---
