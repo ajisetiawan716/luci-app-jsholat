@@ -81,19 +81,19 @@
 
 Untuk memperbarui jadwal sholat secara manual, jalankan salah satu perintah berikut di terminal:
 
-- Menggunakan perintah `jadwal`:
+- Menggunakan perintah `jadwal` untuk sumber jadwal dari aladhan.com:
   
   ```bash
   jadwal
   ```
 
-- Menggunakan perintah `jadwal2`:
+- Menggunakan perintah `jadwal2` untuk sumber jadwal dari jadwalsholat.org:
   
   ```bash
   jadwal2
   ```
 
-Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu yang ditentukan.
+Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu yang ditentukan. Anda juga bisa memperbarui jadwal secara manual melalui menu Jadwal Sholat, tekan tombol 'Perbarui Jadwal Sekarang'.
 
 ### **2. Memeriksa Jadwal Sholat**
 
