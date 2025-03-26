@@ -171,7 +171,7 @@ Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperb
 ---
 ## **Credits**
 
-- Jsholat (Original Script) - [Mikodemos Ragil](https://fb.com/)
+- Jsholat (Original Script) - [Mikodemos Ragil](https://fb.com/mikodemos.ragil)
 - Mesin Adzan OpenWRT (Inspired) - [Hanyasebuahpengalaman](https://hanyasebuahpengalaman.wordpress.com/2019/05/04/mesin-adzan-imsak-quran-30-juz-setiap-malam-auto-play-openwrt/)
 
 ---
