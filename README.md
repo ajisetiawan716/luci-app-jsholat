@@ -162,7 +162,7 @@ Aplikasi ini dilisensikan di bawah [Lisensi MIT](LICENSE).
 
 ---
 
-Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperbarui aplikasi `luci-app-jsholat`. Jangan lupa untuk menyesuaikan link GitHub dengan repositori Anda. Semoga bermanfaat! 😊
+Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperbarui aplikasi `luci-app-jsholat`. 
 
 ---
 
@@ -172,6 +172,6 @@ Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperb
 ## **Credits**
 
 - Jsholat (Original Script) - [Mikodemos Ragil](https://fb.com/mikodemos.ragil)
-- Mesin Adzan OpenWRT (Inspired) - [Hanyasebuahpengalaman](https://hanyasebuahpengalaman.wordpress.com/2019/05/04/mesin-adzan-imsak-quran-30-juz-setiap-malam-auto-play-openwrt/)
+- Mesin Adzan OpenWRT (Inspired) - [Hanyasebuahpengalaman](https://hanyasebuahpengalaman.wordpress.com/2019/05/04/mesin-adzan-imsak-quran-30-juz-setiap-malam-auto-play-openwrt/) / [Khadafi Husein](https://www.facebook.com/groups/openwrt/permalink/2743751135665893/?app=fbl)
 
 ---
