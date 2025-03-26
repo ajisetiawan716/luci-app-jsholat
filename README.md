@@ -169,3 +169,9 @@ Dengan panduan ini, Anda dapat dengan mudah menginstal, menggunakan, dan memperb
 **Berkontribusi**: Jika Anda ingin berkontribusi pada proyek ini, silakan buka [Issues](https://github.com/ajisetiawan716/luci-app-jsholat/issues) atau ajukan Pull Request.
 
 ---
+## **Credits**
+
+- Jsholat (Original Script) - [Mikodemos Ragil](https://fb.com/)
+- Mesin Adzan OpenWRT (Inspired) - [Hanyasebuahpengalaman](https://hanyasebuahpengalaman.wordpress.com/2019/05/04/mesin-adzan-imsak-quran-30-juz-setiap-malam-auto-play-openwrt/)
+
+---
