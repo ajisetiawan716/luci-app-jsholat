@@ -40,7 +40,7 @@
 
 #### **b. Install Paket**
 
-1. Install paket menggunakan perintah `js`:
+1. Install paket menggunakan perintah `jsi`:
    
    ```bash
    jsi
@@ -135,7 +135,7 @@ Berikut adalah struktur file aplikasi yang diinstal:
 
 ## **Cara Uninstall**
 
-1. Hapus paket menggunakan perintah `js`:
+1. Hapus paket menggunakan perintah `jsi`:
    
    ```bash
    jsi

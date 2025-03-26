@@ -121,6 +121,7 @@ uninstall_application() {
     rm -f /usr/bin/jsholat
     rm -f /usr/bin/jadwal
     rm -f /usr/bin/jadwal2
+    rm -f /usr/bin/jsi
     rm -f /usr/lib/lua/luci/controller/jsholat.lua
     rm -f /usr/lib/lua/luci/model/cbi/jsholat.lua
     rm -f /usr/lib/lua/luci/view/jsholat/jsholat.htm
