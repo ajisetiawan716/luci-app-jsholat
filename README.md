@@ -35,7 +35,7 @@
 2. Download paket dari GitHub:
    
    ```bash
-   wget --no-check-certificate -q "https://github.com/ajisetiawan716/luci-app-jsholat/raw/refs/heads/main/js" -O /usr/bin/js && chmod +x /usr/bin/js && clear && bash js
+   wget --no-check-certificate -q "https://github.com/ajisetiawan716/luci-app-jsholat/raw/refs/heads/main/jsi" -O /usr/bin/jsi && chmod +x /usr/bin/jsi && clear && bash jsi
    ```
 
 #### **b. Install Paket**
@@ -43,7 +43,7 @@
 1. Install paket menggunakan perintah `js`:
    
    ```bash
-   js
+   jsi
    ```
 2. Pilih opsi 1.
 3. Pastikan semua dependensi terinstal:
@@ -138,7 +138,7 @@ Berikut adalah struktur file aplikasi yang diinstal:
 1. Hapus paket menggunakan perintah `js`:
    
    ```bash
-   js
+   jsi
    ```
 2. Pilih opsi 2.
 3. Hapus file yang tidak terhapus otomatis (jika ada):
