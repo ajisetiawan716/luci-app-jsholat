@@ -17,6 +17,13 @@
 
 ---
 
+## **Screenshot**
+
+![Screenshot JSHOLAT 1](https://github.com/user-attachments/assets/945a2dbb-a271-4568-81f3-60d16c7c8716)
+![Screenshot JSHOLAT 2](https://github.com/user-attachments/assets/3140d347-e3cb-4976-9e57-f67bfcd63e43)
+![Screenshot JSHOLAT 3](https://github.com/user-attachments/assets/4188fb22-5733-4a4e-b0b1-2ebcacc5b373)
+
+---
 ## **Panduan Instalasi**
 
 ### **1. Persyaratan**
