@@ -93,7 +93,8 @@ Untuk memperbarui jadwal sholat secara manual, jalankan salah satu perintah beri
   jadwal2
   ```
 
-Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu yang ditentukan. Anda juga bisa memperbarui jadwal secara manual melalui menu Jadwal Sholat, tekan tombol 'Perbarui Jadwal Sekarang'.
+Kedua perintah ini akan memperbarui jadwal sholat berdasarkan lokasi dan waktu yang ditentukan. 
+Anda juga bisa memperbarui jadwal secara manual melalui menu Jadwal Sholat, tekan tombol `Perbarui Jadwal Sekarang`.
 
 ### **2. Memeriksa Jadwal Sholat**
 
