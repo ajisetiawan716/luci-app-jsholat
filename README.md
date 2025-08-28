@@ -1,6 +1,8 @@
 
 
 ---
+# **ARCHIVED**
+Repositori ini telah diarsipkan dan dipindah ke [sini](https://github.com/ajisetiawan716/Jsholat?tab=readme-ov-file)
 
 # **luci-app-jsholat**
 
